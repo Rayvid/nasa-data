@@ -136,3 +136,21 @@ Later, script used to extract required typed data
         max(toDecimal128(Triplet_Variability_870,20)) AS Variability870
      FROM Aerosols
      GROUP BY Date, Site_Latitude, Site_Longitude
+     
+And to get same granularity as meteorogical data we create grid
+
+    CREATE TABLE Aerosols_grid ENGINE = Log AS
+    SELECT
+        Date,
+        (FLOOR(toFloat64(Latitude)*2)+0.5)/2 AS Latitude,
+        (FLOOR(toFloat64(Longitude)*2)+0.5)/2 AS Longitude,
+        Ozone,
+        NO2,
+        c440t870_Angstrom_Exponent,
+        Temperature,
+        AOD440,
+        Variability440,
+        AOD870,
+        Variability870
+    FROM
+        default.Aerosols_bananasa
