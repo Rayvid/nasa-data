@@ -139,7 +139,7 @@
      FROM Aerosols
      GROUP BY Date, Site_Latitude, Site_Longitude
      
-### And to get same granularity as meteorogical data we create grid
+### And to get exactly same granularity as meteo data we create grid
 
     CREATE TABLE Aerosols_grid ENGINE = Log AS
     SELECT
@@ -156,3 +156,26 @@
         Variability870
     FROM
         default.Aerosols_bananasa
+
+## Secondary datasource from "POWER Data Access Viewer" for temperature, humidity and wind speed provided as a grid
+
+    CREATE TABLE Meteo (
+        LAT String,
+        LON String,
+        YEAR String,
+        DOY String,
+        TEMP String,
+        WIND String,
+        PRECTOT String
+    ) Engine=Log;
+    
+    --DROP TABLE Meteo_bananasa
+    CREATE TABLE Meteo_bananasa ENGINE=Log AS
+        SELECT
+        toDecimal64(LAT, 10) LAT,
+        toDecimal64(LON, 10) LON,
+        addDays(toDate(CONCAT(YEAR, '-01-01 00:00:00')), toInt32OrZero(DOY) - 1) DATE,
+        toDecimal64(TEMP, 10) TEMP,
+        toDecimal64(WIND, 10) WIND,
+        toDecimal64(PRECTOT, 10) PRECTOT
+        FROM Meteo
