@@ -1,5 +1,7 @@
 # Penguin savers team data strutures and sources
 
+Key data source - AERONET https://aeronet.gsfc.nasa.gov/, for data import, non-typed structure used:
+
     CREATE TABLE default.Aerosols (
       `AERONET_Site` String,
       `Date` String,
@@ -116,3 +118,21 @@
       `Exact_Wavelengths_of_AOD_Empty4` String,
       `Exact_Wavelengths_of_AOD_Empty5` String
     ) ENGINE = Log
+
+Later, script used to extract required typed data
+
+    CREATE TABLE Aerosols_bananasa ENGINE = Log AS
+    SELECT 
+        toDate(CONCAT(SUBSTRING(Date,7,4), REPLACE(SUBSTRING(Date,3,4),':','-'), SUBSTRING(Date,1,2))) as Date,
+        toDecimal64(Site_Latitude, 10) AS Latitude,
+        toDecimal64(Site_Longitude, 10) AS Longitude,
+        MAX(toDecimal64(Ozone,10)) AS Ozone,
+        MAX(toDecimal64(NO2,10)) AS NO2,
+        MAX(toDecimal64(c440t870_Angstrom_Exponent ,10)) AS c440t870_Angstrom_Exponent,
+        MIN(toDecimal64(Sensor_Temperature, 10)) AS Temperature,
+        maxIf(if(toDecimal128(AOD_440nm,20) > -5 AND toDecimal128(AOD_440nm,20) < 0, toDecimal128(0,20), toDecimal128(AOD_440nm,20)),           if(toDecimal128(AOD_440nm,20) > -5 AND toDecimal128(AOD_440nm,20) < 0, toDecimal128(0,20), toDecimal128(AOD_440nm,20)) >= 0) AS AOD440,
+        max(toDecimal128(Triplet_Variability_440,20)) AS Variability440,
+        maxIf(if(toDecimal128(AOD_870nm,20) > -5 AND toDecimal128(AOD_870nm,20) < 0, toDecimal128(0,20), toDecimal128(AOD_870nm,20)),           if(toDecimal128(AOD_870nm,20) > -5 AND toDecimal128(AOD_870nm,20) < 0, toDecimal128(0,20), toDecimal128(AOD_870nm,20)) >= 0) AS AOD870,
+        max(toDecimal128(Triplet_Variability_870,20)) AS Variability870
+     FROM Aerosols
+     GROUP BY Date, Site_Latitude, Site_Longitude
