@@ -1,6 +1,8 @@
 # Penguin savers team data strutures and sources
 
-Key data source - AERONET https://aeronet.gsfc.nasa.gov/, for data import, non-typed structure used:
+## Key data source - AERONET https://aeronet.gsfc.nasa.gov/
+
+### For data import, non-typed structure used
 
     CREATE TABLE default.Aerosols (
       `AERONET_Site` String,
@@ -119,7 +121,7 @@ Key data source - AERONET https://aeronet.gsfc.nasa.gov/, for data import, non-t
       `Exact_Wavelengths_of_AOD_Empty5` String
     ) ENGINE = Log
 
-Later, script used to extract required typed data
+### Later, script used to extract required typed data
 
     CREATE TABLE Aerosols_bananasa ENGINE = Log AS
     SELECT 
@@ -137,7 +139,7 @@ Later, script used to extract required typed data
      FROM Aerosols
      GROUP BY Date, Site_Latitude, Site_Longitude
      
-And to get same granularity as meteorogical data we create grid
+### And to get same granularity as meteorogical data we create grid
 
     CREATE TABLE Aerosols_grid ENGINE = Log AS
     SELECT
