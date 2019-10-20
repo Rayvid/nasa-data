@@ -1,6 +1,6 @@
 # Penguin savers team data strutures and sources
 
-## Key data source - AERONET https://aeronet.gsfc.nasa.gov/
+## Key data source - aerosols from AERONET https://aeronet.gsfc.nasa.gov/cgi-bin/print_web_data_v3
 
 ### For data import, non-typed structure used
 
